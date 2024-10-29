@@ -1,0 +1,19 @@
+
+#
+server:
+    port: 8800
+
+#
+logging:
+  level:
+    com.example.demo: trace
+
+#
+spring:
+  application:
+    name: demo
+
+#
+springdoc:
+  swagger-ui:
+    use-root-path: true
