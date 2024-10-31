@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.system.utils.JsonSchemaValidator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -124,7 +125,44 @@ class JsonSchemaValidatorTest {
     }
 
 
+    /**
+     *
+     */
+    @Disabled
+    @Test
+    void whenRequiredNested_thenAssertions() {
+        var schema = """
+            {
+              "type": "object",
+              "properties": {
+                "auth": {
+                  "type": "object",
+                  "properties": {
+                    "root_user": {
+                      "type": "string"
+                    },
+                    "root_password": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "root_user",
+                    "root_password"
+                  ]
+                }
+              },
+              "required": [
+                "auth"
+              ]
+            }
+            """;
 
+        //
+        var assertions = JsonSchemaValidator.validate(schema, Map.of(
+        ));
+
+        assertEquals(2, assertions.size());
+    }
 
 
     /**
@@ -216,7 +254,6 @@ class JsonSchemaValidatorTest {
 
         assertEquals(0, assertions.size());
     }
-
 
 
 }
