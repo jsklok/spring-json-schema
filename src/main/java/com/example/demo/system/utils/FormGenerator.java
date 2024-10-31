@@ -1,24 +1,37 @@
-package com.example.demo;
+package com.example.demo.system.utils;
 
+import com.example.demo.Car;
+import com.example.demo.uischema.UISchemaGenerator;
 import com.github.victools.jsonschema.generator.*;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import com.github.victools.jsonschema.module.jackson.JacksonOption;
 import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationModule;
 import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationOption;
-import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.lang.reflect.Type;
 
-
-class CarTest {
-
+/**
+ *
+ */
+public class FormGenerator {
 
     /**
      *
+     * @param type
+     * @return
      */
-    @Test
-    void test() {
+    public static Form getForm(Type type) {
+        var jsonSchema = generateJsonSchema(type);
+        var uiSchema = generateUiSchema(type);
+        return new Form(type.getTypeName(), jsonSchema, uiSchema);
+    }
 
+
+    /**
+     * @param type
+     * @return
+     */
+    private static String generateJsonSchema(Type type) {
         var jacksonModule = new JacksonModule(
             JacksonOption.RESPECT_JSONPROPERTY_ORDER,
             JacksonOption.RESPECT_JSONPROPERTY_REQUIRED);
@@ -35,8 +48,28 @@ class CarTest {
             .build();
 
         var generator = new SchemaGenerator(config);
-        var jsonSchema = generator.generateSchema(Car.class);
+        return generator.generateSchema(type).toPrettyString();
+    }
 
-        System.out.println(jsonSchema.toPrettyString());
+    /**
+     * Generate UI Schema
+     *
+     * @param type The type
+     * @return The UI Schema
+     */
+    private static String generateUiSchema(Type type) {
+        var generator = new UISchemaGenerator();
+        return generator.generateSchema(type).toPrettyString();
+    }
+
+    /**
+     * @param jsonSchema
+     * @param uiSchema
+     */
+    public record Form(
+        String type,
+        String jsonSchema,
+        String uiSchema
+    ) {
     }
 }
